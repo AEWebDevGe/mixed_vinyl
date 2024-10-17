@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use function Symfony\Component\String\u;
 
 class VinylController extends AbstractController {
-  #[Route('/')]
+  #[Route('/', name: 'app_homepage')]
   //Funzione che reindirizza il contenuto della homepage
   public function homepage() : Response {
     $tracks = [
@@ -25,18 +25,17 @@ class VinylController extends AbstractController {
         'title' => 'PB & James',
         'tracks' => $tracks,
     ]);
+
     //return new Response('Title: Ajeje Brazorf');
   }
 
-  #[Route('/browse/{slug}')]
+  #[Route('/browse/{slug}', name: 'app_browse')]
   public function browse(string $slug = null) : Response{
-      if($slug) {
-          $title = 'Genre: '.u(str_replace('-', ' ', $slug))->title (true);
-      }
-      else {
-          $title = 'All genres';
-      }
-      return new Response($title);
-    //return new Response('Breakup vinyl? Browse the collection');
+      $genre = $slug ? u(str_replace('-', ' ', $slug))->title(true) : null;
+      //return new Response($title);
+      //return new Response('Breakup vinyl? Browse the collection');
+      return $this->render('vinyl/browse.html.twig', [
+          'genre' => $genre
+      ]);
   }
 }
